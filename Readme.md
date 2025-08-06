@@ -23,7 +23,7 @@ Este projeto implementará um **CRUD** onde permitirá o cadastramento de usuár
 
 ### ☕ Java – Clean Architecture
 
-- Separação clara entre domain, application, infrastructure e interfaces 
+- Separação clara entre domain, application, infrastructure e interfaces
 
 
 📁 Estrutura:
@@ -55,6 +55,6 @@ obs: irá ser escrito no decorrer do desenvolvimento
 
 ## Desenhos técnicos:
 
-![img.png](img.png)
+![img.png](modelagem-banco.png)
 
-![img_1.png](img_1.png)
+![img_1.png](casos-de-uso.png)
