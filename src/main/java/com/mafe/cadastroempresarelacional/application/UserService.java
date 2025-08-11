@@ -1,7 +1,7 @@
 package com.mafe.cadastroempresarelacional.application;
 
 import com.mafe.cadastroempresarelacional.domain.User;
-import com.mafe.cadastroempresarelacional.infraestructure.UserRepository;
+import com.mafe.cadastroempresarelacional.infraestructure.repositorys.UserRepository;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.UserRegisterRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.UserRegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class UserService {
         List<User> user = userRepository.findByEmail(data.getEmail());
 
         if (!user.isEmpty()){
-            return new UserRegisterResponse(500, "Usuário já cadastrado");
+            return new UserRegisterResponse(400, "Usuário já cadastrado");
         }
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

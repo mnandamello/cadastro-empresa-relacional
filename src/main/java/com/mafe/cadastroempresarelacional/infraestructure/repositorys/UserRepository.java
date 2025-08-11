@@ -1,4 +1,4 @@
-package com.mafe.cadastroempresarelacional.infraestructure;
+package com.mafe.cadastroempresarelacional.infraestructure.repositorys;
 
 import com.mafe.cadastroempresarelacional.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
