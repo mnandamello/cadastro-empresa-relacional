@@ -1,4 +1,4 @@
-package com.mafe.cadastro_empresa_relacional;
+package com.mafe.cadastroempresarelacional;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CadastroEmpresaRelacionalApplication {
 
 	public static void main(String[] args) {
-		System.out.println("Hello World");
+		SpringApplication.run(CadastroEmpresaRelacionalApplication.class, args);
 	}
 
 }

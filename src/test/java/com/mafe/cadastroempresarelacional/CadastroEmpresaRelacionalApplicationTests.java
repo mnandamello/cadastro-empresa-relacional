@@ -1,4 +1,4 @@
-package com.mafe.cadastro_empresa_relacional;
+package com.mafe.cadastroempresarelacional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
