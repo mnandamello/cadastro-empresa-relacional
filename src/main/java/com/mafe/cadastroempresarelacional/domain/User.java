@@ -1,4 +1,5 @@
 package com.mafe.cadastroempresarelacional.domain;
+import com.mafe.cadastroempresarelacional.domain.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,9 @@ public class User {
 
     private String name;
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "password_hash")
     private String passwordHash;

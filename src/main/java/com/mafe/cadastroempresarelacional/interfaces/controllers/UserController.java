@@ -1,6 +1,9 @@
 package com.mafe.cadastroempresarelacional.interfaces.controllers;
 
 import com.mafe.cadastroempresarelacional.application.UserService;
+import com.mafe.cadastroempresarelacional.domain.User;
+import com.mafe.cadastroempresarelacional.domain.enums.Role;
+import com.mafe.cadastroempresarelacional.infraestructure.repositorys.UserRepository;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.LoginRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.UserRegisterRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.UserRegisterResponse;
@@ -8,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -20,9 +25,20 @@ public class UserController {
         this.userservice = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserRegisterRequest request){
-        UserRegisterResponse response = userservice.createUser(request);
+    @PostMapping("/basic")
+    public ResponseEntity<?> createUserBasic(@RequestBody UserRegisterRequest request){
+        UserRegisterResponse response = userservice.createUser(request, Role.BASICO);
+
+        if (response.getStatusCode() != 200){
+            throw new IllegalArgumentException("Usuário já cadastrado");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+
+    @PostMapping("/admin")
+    public ResponseEntity<?> createUserAdmin(@RequestBody UserRegisterRequest request){
+        UserRegisterResponse response = userservice.createUser(request, Role.ADMIN);
 
         if (response.getStatusCode() != 200){
             throw new IllegalArgumentException("Usuário já cadastrado");
@@ -35,8 +51,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("oI");
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello User!";
+    @GetMapping("/allUsers")
+    public List<User> getAllUsers() {
+        return userservice.getAllUsers();
     }
 }

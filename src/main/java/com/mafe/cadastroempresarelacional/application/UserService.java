@@ -1,6 +1,7 @@
 package com.mafe.cadastroempresarelacional.application;
 
 import com.mafe.cadastroempresarelacional.domain.User;
+import com.mafe.cadastroempresarelacional.domain.enums.Role;
 import com.mafe.cadastroempresarelacional.infraestructure.repositorys.UserRepository;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.UserRegisterRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.UserRegisterResponse;
@@ -22,7 +23,7 @@ public class UserService {
     }
 
 
-    public UserRegisterResponse createUser(UserRegisterRequest data){
+    public UserRegisterResponse createUser(UserRegisterRequest data, Role role){
         List<User> user = userRepository.findByEmail(data.getEmail());
 
         if (!user.isEmpty()){
@@ -34,6 +35,7 @@ public class UserService {
         User newUser = new User();
         newUser.setName(data.getName());
         newUser.setEmail(data.getEmail());
+        newUser.setRole(role);
         newUser.setPasswordHash(passwordEncoder.encode(data.getPassword()));
 
         newUser = userRepository.save(newUser);
@@ -41,5 +43,11 @@ public class UserService {
         //boolean matches = passwordEncoder.matches(rawPassword, encodedPassword); -> pra verificar se bate com a senha no login
 
         return new UserRegisterResponse(200, "Usuário cadastrado com sucesso");
+    }
+
+    public List<User> getAllUsers(){
+        List<User> users = userRepository.findAll();
+
+        return users;
     }
 }
