@@ -10,6 +10,8 @@ services:
       MYSQL_PASSWORD: root
     ports:
       - "3306:3306"
+    expose:
+      - "3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
