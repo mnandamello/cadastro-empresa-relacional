@@ -19,16 +19,16 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
         http
             .httpBasic(httpbasic -> httpbasic.disable()) /* Desabilita autenticação Basic (usuário:senha no header)*/
             .formLogin(form -> form.disable()) /*desabilita os forms*/
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) /*torna a aplicação stateless, então fazz com q o token tenha q ser passado no Authorization*/
-            .addFilterBefore(new JwtFilter(JwtUtil), AnonymousAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(jwtUtil), AnonymousAuthenticationFilter.class)
             .anonymous(anonymous -> anonymous.disable()) /*Isso impede que requisições sem autenticação sejam tratadas como "usuário anônimo", sem token, sem entrada*/
             .csrf(csrf -> csrf.disable()) /*CSRF é usado para proteger formulários, mas como sua API é stateless e usa JWT, não precisa.*/
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**", "/user/basic", "/user/admin").permitAll() /*falando rotas q nn precisam de token*/
+                    .requestMatchers("/auth/**", "/user/admin").permitAll() /*falando rotas q nn precisam de token*/
                     .anyRequest().authenticated()
             );
 
