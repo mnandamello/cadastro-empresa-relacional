@@ -28,7 +28,7 @@ public class SecurityConfig {
             .anonymous(anonymous -> anonymous.disable()) /*Isso impede que requisições sem autenticação sejam tratadas como "usuário anônimo", sem token, sem entrada*/
             .csrf(csrf -> csrf.disable()) /*CSRF é usado para proteger formulários, mas como sua API é stateless e usa JWT, não precisa.*/
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**", "/user/admin").permitAll() /*falando rotas q nn precisam de token*/
+                    .requestMatchers("user/auth/**", "/user/admin").permitAll() /*falando rotas q nn precisam de token*/
                     .anyRequest().authenticated()
             );
 
