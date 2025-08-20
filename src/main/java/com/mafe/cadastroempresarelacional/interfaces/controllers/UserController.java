@@ -3,9 +3,10 @@ package com.mafe.cadastroempresarelacional.interfaces.controllers;
 import com.mafe.cadastroempresarelacional.application.UserService;
 import com.mafe.cadastroempresarelacional.domain.User;
 import com.mafe.cadastroempresarelacional.domain.enums.Role;
+import com.mafe.cadastroempresarelacional.infraestructure.execpctions.InvalidAuthorizationException;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.LoginRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.UserRegisterRequest;
-import com.mafe.cadastroempresarelacional.interfaces.dto.response.UserRegisterResponse;
+import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,38 +26,31 @@ public class UserController {
         this.userservice = userService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("/basic")
     public ResponseEntity<?> createUserBasic(@RequestBody UserRegisterRequest request){
-        UserRegisterResponse response = userservice.createUser(request, Role.BASIC);
-
-        if (response.getStatusCode() != 201){
-            throw new IllegalArgumentException("Usuário já cadastrado");
-        }
+        ApiResponse response = userservice.createUser(request, Role.BASIC);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
     @PostMapping("/admin")
         public ResponseEntity<?> createUserAdmin(@RequestBody UserRegisterRequest request){
-        UserRegisterResponse response = userservice.createUser(request, Role.ADMIN);
-
-        if (response.getStatusCode() != 200){
-            throw new IllegalArgumentException("Usuário já cadastrado");
-        }
+        ApiResponse response = userservice.createUser(request, Role.ADMIN);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/auth")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
         if (request.getEmail() == null || request.getEmail().isEmpty()){
-            throw new IllegalArgumentException();
+            throw new InvalidAuthorizationException("Email é obrigatório");
         }
 
-
+        String token = userservice.auth(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(201, token));
     }
 
-    @PreAuthorize("hasRole('BASIC')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'BASIC')")
     @GetMapping("/allUsers")
     public List<User> getAllUsers() {
         return userservice.getAllUsers();
