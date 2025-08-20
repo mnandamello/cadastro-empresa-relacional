@@ -2,16 +2,20 @@ package com.mafe.cadastroempresarelacional.infraestructure.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+@Component
 public class JwtUtil {
 
     private final Key key;
+    private static final String SECRET_KEY = "sua-chave-super-secreta-muito-longa-com-minimo-64-caracteres-1234567890-abcdef"; /*lembrar de salvar no env.*/
 
     public JwtUtil() {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512); /*lembrar de salvar no env.*/
+        this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(String email, String role){
@@ -22,7 +26,7 @@ public class JwtUtil {
                 .claim("role",role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 

@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,14 +23,16 @@ public class JwtFilter extends OncePerRequestFilter { // o extends garante que o
         this.jwtUtil = jwtUtil;
     }
 
+    @Override
     protected void doFilterInternal(HttpServletRequest request, //contém os dados da requisição (headers, parâmetros, corpo, etc
                                     HttpServletResponse response, //permite manipular a resposta (status, corpo, headers)
-                                    FilterChain filterChain) throws SecurityException, IOException{ //permite passar a requisição adiante
+                                    FilterChain filterChain) throws ServletException, IOException{ //permite passar a requisição adiante
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null & !authHeader.isEmpty()){
-            String token = authHeader;
+        if (authHeader != null && !authHeader.isEmpty()){
+
+            String token = authHeader.replace("Bearer ", "");
 
             try {
 
@@ -49,6 +52,8 @@ public class JwtFilter extends OncePerRequestFilter { // o extends garante que o
                 return;
             }
         }
+
+        filterChain.doFilter(request, response);
 
     }
 }
