@@ -3,7 +3,7 @@ package com.mafe.cadastroempresarelacional.interfaces.controllers;
 import com.mafe.cadastroempresarelacional.application.UserService;
 import com.mafe.cadastroempresarelacional.domain.User;
 import com.mafe.cadastroempresarelacional.domain.enums.Role;
-import com.mafe.cadastroempresarelacional.infraestructure.execpctions.InvalidAuthorizationException;
+import com.mafe.cadastroempresarelacional.infraestructure.excepctions.InvalidAuthorizationException;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.LoginRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.UserRegisterRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;

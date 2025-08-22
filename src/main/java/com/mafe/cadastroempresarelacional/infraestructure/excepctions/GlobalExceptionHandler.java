@@ -1,4 +1,4 @@
-package com.mafe.cadastroempresarelacional.infraestructure.execpctions;
+package com.mafe.cadastroempresarelacional.infraestructure.excepctions;
 
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
