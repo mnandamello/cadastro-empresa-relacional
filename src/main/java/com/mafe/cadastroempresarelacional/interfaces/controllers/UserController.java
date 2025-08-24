@@ -4,6 +4,8 @@ import com.mafe.cadastroempresarelacional.application.UserService;
 import com.mafe.cadastroempresarelacional.domain.User;
 import com.mafe.cadastroempresarelacional.domain.enums.Role;
 import com.mafe.cadastroempresarelacional.infraestructure.excepctions.InvalidAuthorizationException;
+import com.mafe.cadastroempresarelacional.infraestructure.excepctions.InvalidPasswordException;
+import com.mafe.cadastroempresarelacional.interfaces.dto.request.ChangePasswordRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.LoginRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.UserRegisterRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
@@ -30,7 +32,7 @@ public class UserController {
     @PostMapping("/basic")
     public ResponseEntity<?> createUserBasic(@RequestBody UserRegisterRequest request){
         ApiResponse response = userservice.createUser(request, Role.BASIC);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
@@ -48,6 +50,22 @@ public class UserController {
 
         String token = userservice.auth(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(201, token));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'BASIC')")
+    @PutMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request){
+        if (request.getOldPassword() == null || request.getOldPassword().isEmpty()){
+            throw new InvalidPasswordException("É obrigatório passar a senha atual para que a mudança seja feita!");
+        }
+
+        if (request.getNewPassword() == null || request.getNewPassword().isEmpty()){
+            throw new InvalidPasswordException("É obrigatório passar a nova senha para que a mudança seja feita!");
+        }
+
+        userservice.changePassword(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(200, "Senha alterada com sucesso"));
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'BASIC')")
