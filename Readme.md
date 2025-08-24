@@ -53,6 +53,10 @@ obs: irá ser escrito no decorrer do desenvolvimento
 
 ---
 
+## Patterns Utilizados:
+
+- Exception Handller Pattern -> para a criação de exceções personalizadas e centralizas em um unico controlador
+
 ## Desenhos técnicos:
 
 ![img.png](modelagem-banco.png)
