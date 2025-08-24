@@ -1,5 +1,6 @@
 package com.mafe.cadastroempresarelacional.infraestructure.security;
 
+import com.mafe.cadastroempresarelacional.infraestructure.excepctions.InvalidTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
@@ -37,7 +38,7 @@ public class JwtUtil {
                     .build()//finaliza a construção do parser
                     .parseClaimsJws(token); //Claims é basicamente um Map<String, Object> com os dados (as informações que você armazenou no JWT)
         }catch (JwtException e){
-            throw new JwtException("Invalid or expired token");
+            throw new InvalidTokenException("Invalid or expired token");
         }
     }
 }
