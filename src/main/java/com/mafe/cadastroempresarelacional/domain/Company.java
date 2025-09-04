@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class Company {
     private String contactEmail;
 
     @Column(name = "foundation_data")
-    private Date foundationData;
+    private LocalDate foundationData;
 
     @Column(name = "company_situation")
     private CompanySituation companySituation;
