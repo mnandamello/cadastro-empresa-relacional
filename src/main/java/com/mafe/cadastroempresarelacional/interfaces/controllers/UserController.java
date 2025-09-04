@@ -32,7 +32,7 @@ public class UserController {
     @PostMapping("/basic")
     public ResponseEntity<?> createUserBasic(@RequestBody UserRegisterRequest request){
         ApiResponse response = userservice.createUser(request, Role.BASIC);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
