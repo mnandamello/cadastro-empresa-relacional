@@ -28,12 +28,16 @@
 
 
 # Tarefas a serem feitas:
-    5.	Monitoramento e Logs:
-          •	Configurar logs com SLF4J e Logback.
+    5.  Adiconar try exception
+    6.	Monitoramento e Logs:
+          •	Configurar logs com SLF4J e Logback. (se der colocar nivel de logs)
           •	Implementar endpoints de saúde com Spring Boot Actuator.
-    6.	Implantação:
+    7.	Implantação:
           •	Fornecer instruções para rodar localmente com Docker.
-          •	Criar arquivos Dockerfile e docker-compose.yml para facilitar a execução.
+          •	Criar arquivos Dockerfile e docker-compose.yml para facilitar a execução
+    8.  Documentação:
+          • Colocar swagger como doc
+    9.  Passo-a-passo para rodar o projeto no docker
 
 
 # Comando para mexer no banco:
@@ -42,3 +46,17 @@
     - use <database_name>;
     - show tables;
     - DROP TABLE IF EXISTS addresses;
+
+
+# Refatorações a seres feitas:
+    - Colocar as validações do service dentro de uma annotation personalizada
+    - tirar as annotations da camada de domain e fazer td na mão
+    - criar interfaces do service pra quando formos chamar um metodo não chamarmos a implementação e sim a interface
+    - mudar como faço os metodos de create para usar o builder():
+                Feedback feedback = Feedback.builder()
+                .comentario(request.getComentario())
+                .data(LocalDateTime.now())
+                .materia(materia)
+                .professor(professor)
+                .aluno(aluno)
+                .build();
