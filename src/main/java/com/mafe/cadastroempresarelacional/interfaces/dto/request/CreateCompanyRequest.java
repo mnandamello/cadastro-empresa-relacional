@@ -33,7 +33,7 @@ public class CreateCompanyRequest {
     private LocalDate foundationData;
 
     @NotNull(message = "O campo Company Situation não pode ser nulo")
-    private CompanySituation companySituation;
+    private String companySituation;
 
     @NotEmpty(message = "É necessário ter no mínimo 1 endereço")
     @Valid
