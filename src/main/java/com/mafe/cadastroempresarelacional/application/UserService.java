@@ -39,7 +39,7 @@ public class UserService {
     public ApiResponse createUser(UserRegisterRequest data, Role role){
         Optional<User> user = userRepository.findByEmail(data.getEmail());
 
-        if (!user.isEmpty()){
+        if (user.isPresent()){
             return new ApiResponse(400, "Usuário já cadastrado");
         }
 
@@ -57,7 +57,7 @@ public class UserService {
     public String auth(LoginRequest request){
 
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
-        if (!optionalUser.isPresent()){
+        if (optionalUser.isEmpty()){
             throw  new InvalidAuthorizationException("Usuário não encontrado");
         }
 
