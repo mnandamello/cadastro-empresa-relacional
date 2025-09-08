@@ -40,6 +40,7 @@ public class Company {
     private LocalDate foundationData;
 
     @Column(name = "company_situation")
+    @Enumerated(EnumType.STRING)
     private CompanySituation companySituation;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
