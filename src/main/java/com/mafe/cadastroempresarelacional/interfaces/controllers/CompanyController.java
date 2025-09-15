@@ -1,8 +1,7 @@
 package com.mafe.cadastroempresarelacional.interfaces.controllers;
 
 import com.mafe.cadastroempresarelacional.application.CompanyService;
-import com.mafe.cadastroempresarelacional.domain.Company;
-import com.mafe.cadastroempresarelacional.domain.User;
+import com.mafe.cadastroempresarelacional.interfaces.dto.request.ChangeCompanyRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.CreateCompanyRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.CompanyResponse;
@@ -36,5 +35,21 @@ public class CompanyController {
         CompanyResponse company = companyService.getByCnpj(cnpj);
 
         return ResponseEntity.status(HttpStatus.OK).body(company);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'BASIC')")
+    @PutMapping("/api/v1/companies/{id}")
+    public ResponseEntity<ApiResponse> alterCompany(@PathVariable Long id, @RequestBody ChangeCompanyRequest requst){
+        companyService.alterCompanyInfos(id, requst);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse(204, "Informações alteradas com sucesso"));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @DeleteMapping("/api/v1/companies/{cnpj}")
+    public ResponseEntity<?> deleteCompany(@PathVariable String cnpj){
+        companyService.deleteCompany(cnpj);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse(204, "Empresa deletada com sucesso"));
     }
 }

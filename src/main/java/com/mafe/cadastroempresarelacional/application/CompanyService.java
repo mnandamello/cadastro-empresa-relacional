@@ -6,6 +6,7 @@ import com.mafe.cadastroempresarelacional.domain.enums.CompanySituation;
 import com.mafe.cadastroempresarelacional.infraestructure.excepctions.InvalidCompanyException;
 import com.mafe.cadastroempresarelacional.infraestructure.repositorys.CompanyRepository;
 import com.mafe.cadastroempresarelacional.interfaces.dto.mapper.CompanyMapper;
+import com.mafe.cadastroempresarelacional.interfaces.dto.request.ChangeCompanyRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.CreateCompanyRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.CompanyResponse;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
@@ -72,5 +74,53 @@ public class CompanyService {
         Company optionalCompany = companyRepository.findByCnpj(cnpj).orElseThrow(() -> new InvalidCompanyException("Empresa não encontrada"));
 
         return CompanyMapper.toDTO(optionalCompany);
+    }
+
+    public void alterCompanyInfos(Long id, ChangeCompanyRequest request) {
+        Company company = companyRepository.findById(id).orElseThrow(() -> new InvalidCompanyException("Empresa não encontrada"));
+
+        if (!company.getCnpj().equals(request.cnpj())){
+            throw new InvalidCompanyException("O CNPJ não pode ser alterado!!");
+        }
+
+        CompanySituation companySituation;
+        try {
+            companySituation = CompanySituation.valueOf(request.companySituation().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCompanyException("A situação da empresa deve ser ACTIVE ou INACTIVE");
+        } //em uma refatoração quero criar uma annotation de validação especifica para esse caso, pois esta sendo repetida em 2 metodos
+
+            company.setCnpj(request.cnpj());
+            company.setBusinessName(request.businessName());
+            company.setTradeName(request.tradeName());
+            company.setPhone(request.phone());
+            company.setContactEmail(request.contactEmail());
+            company.setFoundationData(request.foundationData());
+            company.setCompanySituation(companySituation);
+            company.getAdresses().clear();
+
+            List<Adress> existingAdresses = company.getAdresses();
+            existingAdresses.clear();
+
+            request.adresses().forEach(addReq -> {
+                        Adress adress = new Adress();
+                        adress.setStreet(addReq.street());
+                        adress.setNumber(addReq.number());
+                        adress.setComplement(addReq.complement());
+                        adress.setNeighborhood(addReq.neighborhood());
+                        adress.setCity(addReq.city());
+                        adress.setState(addReq.state());
+                        adress.setPostalCode(addReq.postalCode());
+                        adress.setCompany(company);
+                        existingAdresses.add(adress);
+            });
+
+            companyRepository.save(company);
+    }
+
+    public void deleteCompany(String cnpj){
+        Company company = companyRepository.findByCnpj(cnpj).orElseThrow(() -> new InvalidCompanyException("Empresa não encontrada"));
+
+        companyRepository.delete(company);
     }
 }
