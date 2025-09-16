@@ -5,13 +5,19 @@ import com.mafe.cadastroempresarelacional.domain.Company;
 import com.mafe.cadastroempresarelacional.domain.enums.CompanySituation;
 import com.mafe.cadastroempresarelacional.infraestructure.excepctions.InvalidCompanyException;
 import com.mafe.cadastroempresarelacional.infraestructure.repositorys.CompanyRepository;
+import com.mafe.cadastroempresarelacional.infraestructure.specifications.CompanySpecification;
 import com.mafe.cadastroempresarelacional.interfaces.dto.mapper.CompanyMapper;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.ChangeCompanyRequest;
+import com.mafe.cadastroempresarelacional.interfaces.dto.request.CompanyFilter;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.CreateCompanyRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.CompanyResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -122,5 +128,28 @@ public class CompanyService {
         Company company = companyRepository.findByCnpj(cnpj).orElseThrow(() -> new InvalidCompanyException("Empresa não encontrada"));
 
         companyRepository.delete(company);
+    }
+
+    public Page<CompanyResponse> getAllCompanies (CompanyFilter filter, Pageable pageable) {
+        Specification<Company> spec = CompanySpecification.withFilters(filter);
+
+        Pageable sortedPageable = getSortedPageable(pageable, filter);
+
+        Page<Company> companiesPage = companyRepository.findAll(spec, sortedPageable);
+
+        return companiesPage.map(CompanyMapper::toDTO);
+    }
+
+    private Pageable getSortedPageable(Pageable pageable, CompanyFilter filter) {
+        Sort sort = Sort.by(
+                filter.getSortDirection().equalsIgnoreCase("desc") ?
+                        Sort.Direction.DESC : Sort.Direction.ASC,
+                filter.getSortBy()
+        );
+        return PageRequest.of(
+                filter.getPage() != null ? filter.getPage() : pageable.getPageNumber(),
+                filter.getSize() != null ? filter.getSize() : pageable.getPageSize(),
+                sort
+        );
     }
 }
