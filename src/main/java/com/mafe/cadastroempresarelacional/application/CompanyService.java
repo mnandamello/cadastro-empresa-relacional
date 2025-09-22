@@ -96,8 +96,6 @@ public class CompanyService {
             company.setPhone(request.phone());
             company.setContactEmail(request.contactEmail());
             company.setFoundationData(request.foundationData());
-            company.setCompanySituation(companySituation);
-            company.getAdresses().clear();
 
             List<Adress> existingAdresses = company.getAdresses();
             existingAdresses.clear();
