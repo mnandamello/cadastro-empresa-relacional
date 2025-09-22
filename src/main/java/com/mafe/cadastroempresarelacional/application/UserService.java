@@ -10,6 +10,8 @@ import com.mafe.cadastroempresarelacional.interfaces.dto.request.ChangePasswordR
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.LoginRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.UserRegisterRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,6 +30,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(UserRepository userRepository, JwtUtil jwtUtil){
@@ -37,6 +40,7 @@ public class UserService {
 
 
     public ApiResponse createUser(UserRegisterRequest data, Role role){
+        logger.info("Criando novo usuário com o nome");
         Optional<User> user = userRepository.findByEmail(data.getEmail());
 
         if (user.isPresent()){
@@ -51,10 +55,13 @@ public class UserService {
 
         userRepository.save(newUser);
 
+        logger.info("Usuário criando com sucesso: {}", newUser);
+
         return new ApiResponse(201, "Usuário cadastrado com sucesso");
     }
 
     public String auth(LoginRequest request){
+        logger.info("Iniciando processo de autenticação");
 
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
         if (optionalUser.isEmpty()){
@@ -70,6 +77,7 @@ public class UserService {
         String role = user.getRole().name();
         String token = jwtUtil.generateToken(user.getEmail(), role);
 
+        logger.info("Autenticação feita com sucesso");
         return token;
 
     }

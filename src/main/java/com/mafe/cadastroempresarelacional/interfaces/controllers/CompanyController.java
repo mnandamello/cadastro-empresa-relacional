@@ -2,10 +2,15 @@ package com.mafe.cadastroempresarelacional.interfaces.controllers;
 
 import com.mafe.cadastroempresarelacional.application.CompanyService;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.ChangeCompanyRequest;
+import com.mafe.cadastroempresarelacional.interfaces.dto.request.CompanyFilter;
 import com.mafe.cadastroempresarelacional.interfaces.dto.request.CreateCompanyRequest;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.ApiResponse;
 import com.mafe.cadastroempresarelacional.interfaces.dto.response.CompanyResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,5 +56,13 @@ public class CompanyController {
         companyService.deleteCompany(cnpj);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse(204, "Empresa deletada com sucesso"));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'BASIC')")
+    @GetMapping("/api/v1/companies")
+    public ResponseEntity<Page<CompanyResponse>> getAllCompaniesWithFilter (@ModelAttribute CompanyFilter filter, @PageableDefault(page = 0, size = 10, sort = "businessName", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<CompanyResponse> companies = companyService.getAllCompanies(filter, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(companies);
     }
 }
