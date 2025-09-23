@@ -24,6 +24,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(InvalidUserCreationException.class)
+    public ResponseEntity<ApiResponse>handleInvalidUserCreationException(InvalidAuthorizationException ex){
+        logger.error("Erro ao criar usuário {}", ex.getMessage(), ex);
+        ApiResponse response = new ApiResponse(409, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ApiResponse>handleInvalidTokenException(InvalidTokenException ex){
         logger.error("Token Inválido: {}", ex.getMessage(), ex);
